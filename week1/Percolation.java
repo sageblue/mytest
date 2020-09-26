@@ -1,3 +1,5 @@
+import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
@@ -103,13 +105,13 @@ public class Percolation {
             int t;
             if (siteOpen[size - 1][b]) {
                 t = uf.find((size - 1) * size + b);
-                //StdOut.println("parent of " + (size - 1) * size + b + "=" + t);
+                //StdOut.println("parent of " + ((size - 1) * size + b) + " = " + t);
                 /* search top row's parent */
                 for (int a = 0; a < size; a++) {
                     if (parent[a] == t) {
-                        //StdOut.println((size - 1) * size + b + "'s parent match to "
+                        //StdOut.println(((size - 1) * size + b) + "'s parent match to "
                         //                       + a + "'s parent, both are " + t);
-                        //StdOut.println("Yes, system not percolated");
+                        //StdOut.println("Yes, system is percolated");
                         return true;
                     }
                 }
@@ -123,8 +125,8 @@ public class Percolation {
     // test client (optional)
     public static void main(String[] args) {
 
-        Percolation p = new Percolation(5);
-
+        Percolation p = new Percolation(20);
+        /*
         p.open(1, 1);
         p.percolates();
         p.open(2, 1);
@@ -139,6 +141,24 @@ public class Percolation {
         p.percolates();
         p.open(0, 1);
         p.percolates();
+         */
+
+        for (int k = 0; k < 400 + 1; k++) {
+
+            int x, y;
+            do {
+                x = StdRandom.uniform(0, 20);
+                y = StdRandom.uniform(0, 20);
+            } while (p.isOpen(x, y));
+
+
+            p.open(x, y);
+            StdOut.println("open site" + x + " , " + y);
+            if (p.percolates()) {
+                StdOut.println(" percolates at site " + k);
+                break;
+            }
+        }
 
     }
 

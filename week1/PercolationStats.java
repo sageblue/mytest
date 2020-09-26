@@ -9,18 +9,26 @@ public class PercolationStats {
     private int[] threshold;
     private double size;
 
+
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
 
+        StdOut.println("Run PercolationStats " + n + " , " + trials);
         threshold = new int[trials];
         size = n * n;
 
         for (int i = 0; i < trials; i++) {
             Percolation p = new Percolation(n);
 
+            /* random index */
+            int x, y;
             /* need at least n site open to be percolate */
             for (int k = 0; k < n; k++) {
-                p.open(StdRandom.uniform(0, n), StdRandom.uniform(0, n));
+                do {
+                    x = StdRandom.uniform(0, n);
+                    y = StdRandom.uniform(0, n);
+                } while (p.isOpen(x, y));
+                p.open(x, y);
             }
 
             if (p.percolates()) {
@@ -30,7 +38,11 @@ public class PercolationStats {
             }
 
             for (int k = n + 1; k < n * n + 1; k++) {
-                p.open(StdRandom.uniform(0, n), StdRandom.uniform(0, n));
+                do {
+                    x = StdRandom.uniform(0, n);
+                    y = StdRandom.uniform(0, n);
+                } while (p.isOpen(x, y));
+                p.open(x, y);
                 if (p.percolates()) {
                     threshold[i] = k;
                     StdOut.println("[" + i + "]: percolates at " + k);
