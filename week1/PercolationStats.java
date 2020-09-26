@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class PercolationStats {
 
-    private int threshold[];
+    private int[] threshold;
     private double size;
 
     // perform independent trials on an n-by-n grid
@@ -47,7 +47,7 @@ public class PercolationStats {
 
     // sample standard deviation of percolation threshold
     public double stddev() {
-        return StdStats.stddev(threshold) / size / size;
+        return StdStats.stddev(threshold) / size;
     }
 
     // low endpoint of 95% confidence interval
@@ -62,7 +62,6 @@ public class PercolationStats {
 
     // test client (see below)
     public static void main(String[] args) {
-
         Scanner input = new Scanner(System.in);
         int n = input.nextInt();
         int m = input.nextInt();

@@ -3,8 +3,8 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
 
     private WeightedQuickUnionUF uf;
-    private boolean siteOpen[][];
-    private int parent[];
+    private boolean[][] siteOpen;
+    private int[] parent;
     private int size;
     private int openSite;
 
