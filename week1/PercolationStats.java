@@ -2,18 +2,23 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
-import java.util.Scanner;
-
 public class PercolationStats {
 
-    private int[] threshold;
-    private double size;
-
+    private static final double CONFIDENCE_95 = 1.96;
+    private final int[] threshold;
+    private final double size;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
+        if (n <= 0) {
+            throw new IllegalArgumentException(
+                    String.format("Percolation size n (%d) must be greater than 0", n));
+        }
+        if (trials <= 0) {
+            throw new IllegalArgumentException(
+                    String.format("Percolation trial count (%d) must be greater than 0", trials));
+        }
 
-        StdOut.println("Run PercolationStats " + n + " , " + trials);
         threshold = new int[trials];
         size = n * n;
 
@@ -25,27 +30,25 @@ public class PercolationStats {
             /* need at least n site open to be percolate */
             for (int k = 0; k < n; k++) {
                 do {
-                    x = StdRandom.uniform(0, n);
-                    y = StdRandom.uniform(0, n);
+                    x = StdRandom.uniform(1, n + 1);
+                    y = StdRandom.uniform(1, n + 1);
                 } while (p.isOpen(x, y));
                 p.open(x, y);
             }
 
             if (p.percolates()) {
                 threshold[i] = n;
-                StdOut.println("[" + i + "]: percolates at " + n);
-                break;
+                continue;
             }
 
             for (int k = n + 1; k < n * n + 1; k++) {
                 do {
-                    x = StdRandom.uniform(0, n);
-                    y = StdRandom.uniform(0, n);
+                    x = StdRandom.uniform(1, n + 1);
+                    y = StdRandom.uniform(1, n + 1);
                 } while (p.isOpen(x, y));
                 p.open(x, y);
                 if (p.percolates()) {
                     threshold[i] = k;
-                    StdOut.println("[" + i + "]: percolates at " + k);
                     break;
                 }
             }
@@ -64,19 +67,22 @@ public class PercolationStats {
 
     // low endpoint of 95% confidence interval
     public double confidenceLo() {
-        return mean() - 1.96 * stddev() / Math.sqrt(threshold.length);
+        return mean() - CONFIDENCE_95 * stddev() / Math.sqrt(threshold.length);
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
-        return mean() + 1.96 * stddev() / Math.sqrt(threshold.length);
+        return mean() + CONFIDENCE_95 * stddev() / Math.sqrt(threshold.length);
     }
 
     // test client (see below)
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        int n = input.nextInt();
-        int m = input.nextInt();
+        if (args.length < 2) {
+            return;
+        }
+
+        int n = Integer.parseInt(args[0]);
+        int m = Integer.parseInt(args[1]);
 
         PercolationStats pS = new PercolationStats(n, m);
 

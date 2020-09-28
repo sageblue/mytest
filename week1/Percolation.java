@@ -1,17 +1,19 @@
-import edu.princeton.cs.algs4.StdOut;
-import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
 
-    private WeightedQuickUnionUF uf;
+    private final WeightedQuickUnionUF uf;
     private boolean[][] siteOpen;
     private int[] parent;
-    private int size;
+    private final int size;
     private int openSite;
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException(
+                    String.format("Percolation size n (%d) must be greater than 0", n));
+        }
         size = n;
         siteOpen = new boolean[n][n];
         parent = new int[n];
@@ -31,8 +33,27 @@ public class Percolation {
         openSite = 0;
     }
 
+    private void checkRowColIndex(int row, int col) {
+        if (row < 1 || row > size) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Percolation.Open() index must be within [1,%d], row index %d out of range",
+                            size, row));
+        }
+        if (col < 1 || col > size) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Percolation.Open() index must be within [1,%d], row index %d out of range",
+                            size, col));
+        }
+    }
+
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
+        checkRowColIndex(row, col);
+        row--;
+        col--;
+
         if (siteOpen[row][col])
             return;
 
@@ -62,11 +83,18 @@ public class Percolation {
 
     // is the site (row, col) open?
     public boolean isOpen(int row, int col) {
+        checkRowColIndex(row, col);
+        row--;
+        col--;
         return siteOpen[row][col];
     }
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
+        checkRowColIndex(row, col);
+        row--;
+        col--;
+
         if (!siteOpen[row][col])
             return false;
 
@@ -105,61 +133,22 @@ public class Percolation {
             int t;
             if (siteOpen[size - 1][b]) {
                 t = uf.find((size - 1) * size + b);
-                //StdOut.println("parent of " + ((size - 1) * size + b) + " = " + t);
                 /* search top row's parent */
                 for (int a = 0; a < size; a++) {
                     if (parent[a] == t) {
-                        //StdOut.println(((size - 1) * size + b) + "'s parent match to "
-                        //                       + a + "'s parent, both are " + t);
-                        //StdOut.println("Yes, system is percolated");
                         return true;
                     }
                 }
 
             }
         }
-        //StdOut.println("No, system not percolated");
         return false;
     }
 
     // test client (optional)
     public static void main(String[] args) {
+        /* empty function */
 
-        Percolation p = new Percolation(20);
-        /*
-        p.open(1, 1);
-        p.percolates();
-        p.open(2, 1);
-        p.percolates();
-        p.open(3, 1);
-        p.percolates();
-        p.open(2, 2);
-        p.percolates();
-        p.open(3, 2);
-        p.percolates();
-        p.open(4, 2);
-        p.percolates();
-        p.open(0, 1);
-        p.percolates();
-         */
-
-        for (int k = 0; k < 400 + 1; k++) {
-
-            int x, y;
-            do {
-                x = StdRandom.uniform(0, 20);
-                y = StdRandom.uniform(0, 20);
-            } while (p.isOpen(x, y));
-
-
-            p.open(x, y);
-            StdOut.println("open site" + x + " , " + y);
-            if (p.percolates()) {
-                StdOut.println(" percolates at site " + k);
-                break;
-            }
-        }
 
     }
-
 }
